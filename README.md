@@ -7,7 +7,6 @@
     <img src="https://img.shields.io/badge/React_(17.0.2)-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="reactjs" />
     <img src="https://img.shields.io/badge/Redux_(4.1.2)-593D88?style=for-the-badge&logo=redux&logoColor=white" alt="redux" />
     <img src="https://img.shields.io/badge/Material_UI-0081CB?style=for-the-badge&logo=material-ui&logoColor=white" alt="material-ui"/>
-    <img src="https://img.shields.io/badge/Rest_API-02303A?style=for-the-badge&logo=react-router&logoColor=white" alt="restAPI"/>
     <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="css3"/>     
 </p>
 
@@ -24,7 +23,7 @@ This project aims to provide users with a simple and intuitive interface for gen
 
 - Create dynamic forms using JSON configurations.
 - Add, edit, and delete form fields effortlessly.
-- Support for various field types including text, radio buttons, checkboxes, select dropdowns, and more.
+- Support for various field types including text, radio buttons, select dropdowns, and more.
 - Built-in validation for ensuring data integrity.
 - Intuitive user interface for seamless form creation and management.
 - Dynamic form preview to visualize the appearance of the generated forms.
