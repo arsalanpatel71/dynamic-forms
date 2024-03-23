@@ -25,7 +25,7 @@ const ManageForm = () => {
   const handleOpenDialog = (config) => {
     setSelectedFormConfig(config);
     setOpenDialog(true);
-    setCopyButtonText("Copy"); // Reset button text when opening dialog
+    setCopyButtonText("Copy");
   };
 
   const handleCloseDialog = () => {
@@ -39,11 +39,10 @@ const ManageForm = () => {
       .writeText(jsonStr)
       .then(() => {
         setCopyButtonText("Copied");
-        setTimeout(() => setCopyButtonText("Copy"), 2000); // Change back to "Copy" after 2 seconds
+        setTimeout(() => setCopyButtonText("Copy"), 2000);
       })
       .catch((err) => {
         console.error("Failed to copy: ", err);
-        // Optionally handle copy failure here
       });
   };
 
@@ -66,8 +65,7 @@ const ManageForm = () => {
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
-        style={{ width: "80%" }} // Adjust the width using vw (viewport width)
-        // maxWidth="md" // Adjust the maxWidth as needed
+        style={{ width: "80%" }}
         fullWidth={true}
         aria-labelledby="form-dialog-title"
       >

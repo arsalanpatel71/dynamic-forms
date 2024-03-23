@@ -43,7 +43,7 @@ const CreateForm = () => {
         },
       },
       {
-        type: "file", // Example type
+        type: "file",
         label: "New Field",
         name: "newFieldName",
         placeholder: "A new field",
@@ -122,11 +122,10 @@ const CreateForm = () => {
   );
 
   const handleJSONChange = (newValue) => {
-    setFormConfig(newValue); // Store the JSON string for the AceEditor value
+    setFormConfig(newValue);
     try {
       const parsedJSON = JSON.parse(newValue);
-      setParsedFormConfig(parsedJSON); // Keep the parsed form configuration up to date
-      // If using a separate state, ensure it's updated here
+      setParsedFormConfig(parsedJSON);
     } catch (error) {
       console.error("Invalid JSON:", error);
     }
@@ -179,10 +178,8 @@ const CreateForm = () => {
   const handleFieldChange = (e) => {
     const { name, value, files, type } = e.target;
 
-    // Since formConfig is a string, parse it to get the configuration array.
     const configArray = JSON.parse(formConfig);
 
-    // Find the configuration for the field that triggered the change event.
     const fieldConfig = configArray.find((f) => f.name === name);
 
     // Handle file input separately
@@ -401,7 +398,7 @@ const CreateForm = () => {
             );
           }
         default:
-          return null; // Handle unsupported field types
+          return null;
       }
     });
   };
@@ -425,7 +422,7 @@ const CreateForm = () => {
           editorProps={{ $blockScrolling: true }}
           value={formConfig}
           setOptions={{ useWorker: false }}
-          style={{ width: "100%", height: "100%" }} // Adjust width in vw as needed
+          style={{ width: "100%", height: "100%" }}
         />
       </div>
       <div
@@ -437,7 +434,6 @@ const CreateForm = () => {
           padding: "20px",
         }}
       >
-        {/* Ensure renderForm is called with the state that contains the JSON string */}
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           {renderForm(formConfig)}
           <Button
