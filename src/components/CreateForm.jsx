@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { saveFormConfig } from "../redux/formSlice";
-// import JSONInput from "react-json-editor-ajrm";
-// import locale from "react-json-editor-ajrm/locale/en";
+import { Button } from "@mui/material";
+
 import AceEditor from "react-ace";
 
 import "ace-builds/src-noconflict/mode-json";
@@ -264,6 +264,11 @@ const CreateForm = () => {
                     name={field.name}
                     value={option.value}
                     onChange={(e) => handleRadioChange(e, field.name)}
+                    style={{
+                      marginBottom: "10px",
+                      padding: "5px",
+                      border: "1px solid #ccc",
+                    }}
                   />{" "}
                   {option.label}
                 </label>
@@ -277,7 +282,12 @@ const CreateForm = () => {
               <input
                 type="file"
                 name={field.name}
-                onChange={(e) => validateFile(e, field.validation.fileTypes)} // Pass allowed file types for validation
+                onChange={(e) => validateFile(e, field.validation.fileTypes)}
+                style={{
+                  marginBottom: "10px",
+                  padding: "5px",
+                  border: "1px solid #ccc",
+                }}
               />
               {validationMessages[field.name] && (
                 <p style={{ color: "red" }}>{validationMessages[field.name]}</p>
@@ -293,6 +303,11 @@ const CreateForm = () => {
                 name={field.name}
                 placeholder={field.placeholder}
                 onChange={handleFieldChange}
+                style={{
+                  marginBottom: "10px",
+                  padding: "5px",
+                  border: "1px solid #ccc",
+                }}
               ></textarea>
             </div>
           );
@@ -304,6 +319,11 @@ const CreateForm = () => {
                   type="checkbox"
                   name={field.name}
                   onChange={handleFieldChange}
+                  style={{
+                    marginBottom: "10px",
+                    padding: "5px",
+                    border: "1px solid #ccc",
+                  }}
                 />{" "}
                 {field.label}
               </label>
@@ -320,6 +340,11 @@ const CreateForm = () => {
                     name={field.name}
                     value={option.value}
                     onChange={handleFieldChange}
+                    style={{
+                      marginBottom: "10px",
+                      padding: "5px",
+                      border: "1px solid #ccc",
+                    }}
                   />{" "}
                   {option.label}
                 </label>
@@ -335,7 +360,12 @@ const CreateForm = () => {
                 type={field.type}
                 name={field.name}
                 placeholder={field.placeholder}
-                onChange={handleFieldChange} // Attach the onChange handler
+                onChange={handleFieldChange}
+                style={{
+                  marginBottom: "10px",
+                  padding: "5px",
+                  border: "1px solid #ccc",
+                }}
               />
             </div>
           );
@@ -345,7 +375,15 @@ const CreateForm = () => {
             return (
               <div key={index}>
                 <label>{field.label}</label>
-                <select name={field.name} onChange={handleFieldChange}>
+                <select
+                  name={field.name}
+                  onChange={handleFieldChange}
+                  style={{
+                    marginBottom: "10px",
+                    padding: "5px",
+                    border: "1px solid #ccc",
+                  }}
+                >
                   {field.options.map((option, i) => (
                     <option key={i} value={option.value}>
                       {option.label}
@@ -375,6 +413,8 @@ const CreateForm = () => {
           flex: 1,
           overflow: "auto",
           border: "1px solid black",
+          width: "100%",
+          height: "100%",
         }}
       >
         <AceEditor
@@ -385,13 +425,30 @@ const CreateForm = () => {
           editorProps={{ $blockScrolling: true }}
           value={formConfig}
           setOptions={{ useWorker: false }}
+          style={{ width: "100%", height: "100%" }} // Adjust width in vw as needed
         />
       </div>
-      <div style={{ flex: 1, overflow: "auto", border: "1px solid red" }}>
+      <div
+        style={{
+          flex: 1,
+          overflow: "auto",
+
+          margin: "20px",
+          padding: "20px",
+        }}
+      >
         {/* Ensure renderForm is called with the state that contains the JSON string */}
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           {renderForm(formConfig)}
-          <button type="submit">Submit</button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+            style={{ marginRight: "10px" }}
+          >
+            Submit
+          </Button>
         </form>
         {submissionStatus.message && (
           <p style={{ color: submissionStatus.isSuccess ? "green" : "red" }}>
