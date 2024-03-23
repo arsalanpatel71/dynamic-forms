@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { saveFormConfig } from "../redux/formSlice";
 // import JSONInput from "react-json-editor-ajrm";
 // import locale from "react-json-editor-ajrm/locale/en";
 import AceEditor from "react-ace";
@@ -7,6 +9,8 @@ import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
 
 const CreateForm = () => {
+  const dispatch = useDispatch();
+
   const initialFormConfig = JSON.stringify(
     [
       {
@@ -109,12 +113,19 @@ const CreateForm = () => {
   const [formConfig, setFormConfig] = useState(initialFormConfig);
   const [validationMessages, setValidationMessages] = useState({});
   const [selectedValues, setSelectedValues] = useState({});
+  const [submissionStatus, setSubmissionStatus] = useState({
+    message: "",
+    isSuccess: false,
+  });
+  const [parsedFormConfig, setParsedFormConfig] = useState(
+    JSON.parse(initialFormConfig)
+  );
 
   const handleJSONChange = (newValue) => {
     setFormConfig(newValue); // Store the JSON string for the AceEditor value
     try {
       const parsedJSON = JSON.parse(newValue);
-      // Use another state or a way to pass this parsedJSON to renderForm
+      setParsedFormConfig(parsedJSON); // Keep the parsed form configuration up to date
       // If using a separate state, ensure it's updated here
     } catch (error) {
       console.error("Invalid JSON:", error);
@@ -126,12 +137,78 @@ const CreateForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const parsedConfig = JSON.parse(formConfig);
-    // Example validation logic
-    parsedConfig.forEach((field) => {
-      // Apply validation based on field.validation rules
+    const formData = new FormData(e.target);
+    let isValidForm = true;
+    const newValidationMessages = {};
+
+    parsedFormConfig.forEach((field) => {
+      const value = formData.get(field.name);
+
+      let isEmpty = !value;
+      if (field.type === "file") {
+        const input = document.querySelector(`input[name="${field.name}"]`);
+        isEmpty = !input.files.length;
+      }
+
+      if (field.validation?.required && isEmpty) {
+        newValidationMessages[field.name] = `${field.label} cannot be empty.`;
+        isValidForm = false;
+      }
     });
-    // Submit form if valid
+
+    setValidationMessages(newValidationMessages);
+
+    if (isValidForm) {
+      console.log("Form data is valid. Process submission here.");
+      dispatch(saveFormConfig(JSON.parse(formConfig)));
+
+      // Process form submission logic here
+      setSubmissionStatus({
+        message: "Form submitted successfully!",
+        isSuccess: true,
+      });
+    } else {
+      console.log("Validation failed.");
+      setSubmissionStatus({
+        message: "Form submission failed. Please fill all the fields",
+        isSuccess: false,
+      });
+    }
+  };
+
+  const handleFieldChange = (e) => {
+    const { name, value, files, type } = e.target;
+
+    // Since formConfig is a string, parse it to get the configuration array.
+    const configArray = JSON.parse(formConfig);
+
+    // Find the configuration for the field that triggered the change event.
+    const fieldConfig = configArray.find((f) => f.name === name);
+
+    // Handle file input separately
+    if (type === "file") {
+      if (fieldConfig.validation?.required && files.length === 0) {
+        setValidationMessages((prev) => ({
+          ...prev,
+          [name]: `${fieldConfig.label} cannot be empty.`,
+        }));
+      } else {
+        const { [name]: removed, ...rest } = validationMessages;
+        setValidationMessages(rest);
+      }
+      return;
+    }
+
+    // For other input types
+    if (fieldConfig.validation?.required && !value.trim()) {
+      setValidationMessages((prev) => ({
+        ...prev,
+        [name]: `${fieldConfig.label} cannot be empty.`,
+      }));
+    } else {
+      const { [name]: removed, ...rest } = validationMessages;
+      setValidationMessages(rest);
+    }
   };
 
   const renderForm = (jsonConfig) => {
@@ -215,6 +292,7 @@ const CreateForm = () => {
               <textarea
                 name={field.name}
                 placeholder={field.placeholder}
+                onChange={handleFieldChange}
               ></textarea>
             </div>
           );
@@ -222,7 +300,12 @@ const CreateForm = () => {
           return (
             <div key={index}>
               <label>
-                <input type="checkbox" name={field.name} /> {field.label}
+                <input
+                  type="checkbox"
+                  name={field.name}
+                  onChange={handleFieldChange}
+                />{" "}
+                {field.label}
               </label>
             </div>
           );
@@ -232,7 +315,12 @@ const CreateForm = () => {
               <label>{field.label}</label>
               {field.options.map((option, i) => (
                 <label key={i}>
-                  <input type="radio" name={field.name} value={option.value} />{" "}
+                  <input
+                    type="radio"
+                    name={field.name}
+                    value={option.value}
+                    onChange={handleFieldChange}
+                  />{" "}
                   {option.label}
                 </label>
               ))}
@@ -247,6 +335,7 @@ const CreateForm = () => {
                 type={field.type}
                 name={field.name}
                 placeholder={field.placeholder}
+                onChange={handleFieldChange} // Attach the onChange handler
               />
             </div>
           );
@@ -256,7 +345,7 @@ const CreateForm = () => {
             return (
               <div key={index}>
                 <label>{field.label}</label>
-                <select name={field.name}>
+                <select name={field.name} onChange={handleFieldChange}>
                   {field.options.map((option, i) => (
                     <option key={i} value={option.value}>
                       {option.label}
@@ -304,6 +393,11 @@ const CreateForm = () => {
           {renderForm(formConfig)}
           <button type="submit">Submit</button>
         </form>
+        {submissionStatus.message && (
+          <p style={{ color: submissionStatus.isSuccess ? "green" : "red" }}>
+            {submissionStatus.message}
+          </p>
+        )}
       </div>
     </div>
   );
