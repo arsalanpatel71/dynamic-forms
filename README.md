@@ -1,4 +1,4 @@
-<h1 align="center">Dynamic Forms Generator</h1>
+<h1 align="center">Dynamic Form Generator</h1>
 
 <h2 align="center">Web application for creating dynamic forms easily using JSON configurations.</h2>
 
